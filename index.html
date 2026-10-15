@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTAL ORTALA PSDKP</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --navy: #142B4A;
+            --navy-light: #1c3b63;
+            --teal: #16A6A1;
+            --teal-hover: #138D89;
+            --bg-body: #F4F7F9;
+            --surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Global Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.5; 
+            overflow-x: hidden; 
+        }
+        a { text-decoration: none; color: inherit; }
+        button { border: none; background: none; cursor: pointer; font-family: inherit; }
+        
+        /* Layout Structure */
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { 
+            width: 280px; 
+            background-color: var(--surface); 
+            border-right: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            position: fixed; 
+            top: 0; bottom: 0; left: 0; 
+            z-index: 40; 
+            transition: var(--transition); 
+        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border); }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-icon { 
+            width: 40px; height: 40px; 
+            background-color: var(--navy); 
+            border-radius: var(--radius-md); 
+            display: flex; align-items: center; justify-content: center; 
+            color: white; 
+        }
+        .brand-text h1 { font-size: 16px; font-weight: 700; color: var(--navy); letter-spacing: -0.01em; }
+        .brand-text span { font-size: 10px; font-weight: 600; color: var(--teal); letter-spacing: 0.05em; text-transform: uppercase; }
+        
+        .sidebar-nav { padding: 24px 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        
+        /* Navigation Items */
+        .nav-item { 
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; 
+            border-radius: var(--radius-sm); 
+            color: var(--text-muted); 
+            font-weight: 500; font-size: 14px; 
+            transition: var(--transition); 
+            cursor: pointer;
+        }
+        .nav-item-content { display: flex; align-items: center; gap: 12px; }
+        .nav-item:hover { background-color: #F8FAFC; color: var(--navy); }
+        .nav-item.active { background-color: #F0F9F8; color: var(--teal); }
+        .nav-item.active i, .nav-item.active svg { color: var(--teal); }
+
+        /* Sidebar Submenu */
+        .nav-group { display: flex; flex-direction: column; }
+        .submenu-icon { width: 16px; height: 16px; transition: transform 0.3s ease; }
+        .nav-group.open .submenu-icon { transform: rotate(180deg); }
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, margin 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 44px; /* Align text with parent text */
+            padding-right: 16px;
+        }
+        .nav-group.open .submenu {
+            max-height: 250px;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        .submenu-item-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            display: block;
+            font-weight: 500;
+        }
+        .submenu-item-link:hover, .submenu-item-link.active {
+            color: var(--teal);
+            background-color: #E1F5F4;
+        }
+        
+        /* Main Content Area */
+        .main-content { 
+            flex: 1; 
+            margin-left: 280px; 
+            display: flex; flex-direction: column; 
+            min-width: 0; 
+            transition: var(--transition); 
+        }
+        
+        /* Header */
+        .header { 
+            height: 72px; 
+            background-color: var(--surface); 
+            border-bottom: 1px solid var(--border); 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 32px; 
+            position: sticky; top: 0; 
+            z-index: 30; 
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .menu-toggle { display: none; padding: 8px; color: var(--text-muted); border-radius: var(--radius-sm); }
+        .menu-toggle:hover { background-color: #F8FAFC; color: var(--navy); }
+        
+        .breadcrumb { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+        .breadcrumb span { color: var(--text-main); }
+        
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        .current-date { font-size: 14px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 8px; }
+        
+        .user-profile { display: flex; align-items: center; gap: 12px; padding-left: 24px; border-left: 1px solid var(--border); }
+        .avatar { 
+            width: 36px; height: 36px; 
+            background-color: #E1F5F4; color: var(--teal); 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 600; font-size: 14px; 
+        }
+        .user-info { display: flex; flex-direction: column; text-align: right; }
+        .user-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .user-role { font-size: 12px; color: var(--text-muted); }
+
+        /* Content Wrapper */
+        .content-wrapper { padding: 32px; flex: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        /* Hero Section */
+        .hero-section { 
+            background: linear-gradient(135deg, var(--navy) 0%, #1A365D 100%); 
+            border-radius: var(--radius-lg); 
+            padding: 48px; color: white; 
+            position: relative; overflow: hidden; 
+            margin-bottom: 40px; 
+            box-shadow: var(--shadow-md); 
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; }
+        .hero-badge { 
+            display: inline-block; 
+            background: rgba(22, 166, 161, 0.2); 
+            color: #4FD1C5; 
+            font-size: 12px; font-weight: 600; 
+            padding: 6px 12px; border-radius: 20px; 
+            margin-bottom: 16px; 
+            border: 1px solid rgba(22, 166, 161, 0.3); 
+            letter-spacing: 0.05em; text-transform: uppercase; 
+        }
+        .hero-title { font-size: 32px; font-weight: 700; margin-bottom: 12px; line-height: 1.2; letter-spacing: -0.02em; }
+        .hero-desc { font-size: 15px; color: #CBD5E1; line-height: 1.6; }
+        
+        .hero-decor { position: absolute; top: 0; right: 0; bottom: 0; width: 50%; opacity: 0.1; pointer-events: none; }
+        .circle-1 { position: absolute; right: -50px; top: -100px; width: 300px; height: 300px; border-radius: 50%; background: white; }
+        .circle-2 { position: absolute; right: 150px; bottom: -150px; width: 400px; height: 400px; border-radius: 50%; border: 40px solid white; }
+
+        /* Services Header */
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .section-title h2 { font-size: 24px; font-weight: 700; color: var(--navy); margin-bottom: 4px; letter-spacing: -0.01em; }
+        .section-title p { font-size: 14px; color: var(--text-muted); }
+        
+        .search-box { position: relative; width: 320px; }
+        .search-box i, .search-box svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
+        .search-input { 
+            width: 100%; padding: 12px 16px 12px 44px; 
+            border: 1px solid var(--border); border-radius: var(--radius-md); 
+            font-size: 14px; outline: none; transition: var(--transition); 
+            background-color: var(--surface); font-family: inherit; 
+        }
+        .search-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(22, 166, 161, 0.1); }
+
+        /* Services Grid: 4 columns desktop, 2 tablet, 1 mobile */
+        .services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        
+        /* Service Card */
+        .service-card { 
+            background-color: var(--surface); 
+            border: 1px solid var(--border); border-radius: var(--radius-lg); 
+            padding: 24px; display: flex; flex-direction: column; 
+            transition: var(--transition); position: relative; 
+            cursor: pointer;
+        }
+        .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--teal); }
+        
+        .card-icon-wrapper { 
+            width: 48px; height: 48px; border-radius: var(--radius-md); 
+            display: flex; align-items: center; justify-content: center; 
+            margin-bottom: 20px; 
+            transition: var(--transition);
+        }
+        .card-icon-wrapper.navy-pastel { background-color: #F0F4F8; color: var(--navy); }
+        .card-icon-wrapper.teal-pastel { background-color: #E1F5F4; color: var(--teal); }
+        
+        /* Card Hover Animations */
+        .service-card:hover .card-icon-wrapper { transform: scale(1.05); }
+        
+        .card-title { font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+        .card-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; flex: 1; line-height: 1.5; }
+        
+        /* Card Action */
+        .card-action { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--teal); margin-top: auto; transition: var(--transition); }
+        .card-action svg { width: 16px; height: 16px; transition: transform 0.2s ease; }
+        .service-card:hover .card-action svg { transform: translateX(4px); }
+        
+        /* Empty State */
+        .empty-state { 
+            grid-column: 1 / -1; display: none; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 64px 24px; text-align: center; 
+            background: var(--surface); border-radius: var(--radius-lg); border: 1px dashed var(--border); 
+        }
+        .empty-state-icon { width: 64px; height: 64px; color: var(--border); margin-bottom: 16px; }
+        .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+        .empty-state p { font-size: 14px; color: var(--text-muted); }
+
+        /* Footer */
+        .footer { 
+            padding: 24px 32px; border-top: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 13px; color: var(--text-muted); background: var(--surface); margin-top: auto; 
+        }
+        
+        /* Overlay for Mobile */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 35; backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s ease; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .services-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 1024px) {
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { display: block; opacity: 1; }
+            .main-content { margin-left: 0; }
+            .header { padding: 0 16px; }
+            .menu-toggle { display: block; }
+            .content-wrapper { padding: 24px 16px; }
+            .hero-section { padding: 32px 24px; }
+            .hero-title { font-size: 24px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .search-box { width: 100%; }
+            .current-date { display: none; }
+            .user-name, .user-role { display: none; }
+            .user-profile { padding-left: 0; border-left: none; }
+            .footer { flex-direction: column; gap: 8px; text-align: center; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Mobile Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i data-lucide="anchor"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1>ORTALA PSDKP</h1>
+                        <span>PORTAL LAYANAN INTERNAL</span>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <!-- Dashboard Link -->
+                <a href="#" class="nav-item active sidebar-link" data-id="dashboard" onclick="handleNavigation(event, 'Dashboard', '#')">
+                    <div class="nav-item-content">
+                        <i data-lucide="layout-dashboard"></i> Dashboard
+                    </div>
+                </a>
+                
+                <!-- Manajemen Kantor (Dropdown Menu) -->
+                <div class="nav-group">
+                    <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
+                        <div class="nav-item-content">
+                            <i data-lucide="briefcase"></i> Manajemen Kantor
+                        </div>
+                        <i data-lucide="chevron-down" class="submenu-icon"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="javascript:void(0)" class="submenu-item-link sidebar-link" onclick="handleNavigation(event, 'Anggaran', configURLs.anggaran)">Anggaran</a>
+                        <a href="javascript:void(0)" class="submenu-item-link sidebar-link" onclick="handleNavigation(event, 'SPJ Keuangan', configURLs.spjKeuangan)">SPJ Keuangan</a>
+                        <a href="javascript:void(0)" class="submenu-item-link sidebar-link" onclick="handleNavigation(event, 'Manajemen Rapat', configURLs.manajemenRapat)">Manajemen Rapat</a>
+                    </div>
+                </div>
+
+                <!-- Reformasi Birokrasi (Dropdown Menu) -->
+                <div class="nav-group">
+                    <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
+                        <div class="nav-item-content">
+                            <i data-lucide="shield-check"></i> Reformasi Birokrasi
+                        </div>
+                        <i data-lucide="chevron-down" class="submenu-icon"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="javascript:void(0)" class="submenu-item-link sidebar-link" onclick="handleNavigation(event, 'Benturan Kepentingan', configURLs.benturanKepentingan)">Benturan Kepentingan</a>
+                    </div>
+                </div>
+
+                <!-- Direct Links -->
+                <a href="javascript:void(0)" class="nav-item sidebar-link" onclick="handleNavigation(event, 'Bezzeting', configURLs.bezzeting)">
+                    <div class="nav-item-content">
+                        <i data-lucide="users"></i> Bezzeting
+                    </div>
+                </a>
+                <a href="javascript:void(0)" class="nav-item sidebar-link" onclick="handleNavigation(event, 'SOP', configURLs.sop)">
+                    <div class="nav-item-content">
+                        <i data-lucide="clipboard-list"></i> SOP
+                    </div>
+                </a>
+                <a href="javascript:void(0)" class="nav-item sidebar-link" onclick="handleNavigation(event, 'Inovasi', configURLs.inovasi)">
+                    <div class="nav-item-content">
+                        <i data-lucide="lightbulb"></i> Inovasi
+                    </div>
+                </a>
+                <a href="javascript:void(0)" class="nav-item sidebar-link" onclick="handleNavigation(event, 'Budaya Kerja', configURLs.budayaKerja)">
+                    <div class="nav-item-content">
+                        <i data-lucide="heart-handshake"></i> Budaya Kerja
+                    </div>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        Portal / <span>Dashboard</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="current-date">
+                        <i data-lucide="calendar" style="width: 16px; height: 16px;"></i>
+                        <span id="dateDisplay">Memuat tanggal...</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-name">Pegawai PSDKP</span>
+                        </div>
+                        <div class="avatar">P</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="content-wrapper">
+                
+                <!-- Hero Section -->
+                <section class="hero-section">
+                    <div class="hero-decor">
+                        <div class="circle-1"></div>
+                        <div class="circle-2"></div>
+                    </div>
+                    <div class="hero-content">
+                        <div class="hero-badge">Satu Portal, Beragam Layanan</div>
+                        <h2 class="hero-title">Selamat Datang di Portal Ortala PSDKP</h2>
+                        <p class="hero-desc">Pusat layanan organisasi dan tata laksana untuk mendukung administrasi, transparansi, dan kinerja yang lebih efektif.</p>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section class="services-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <h2>Jelajahi Layanan</h2>
+                            <p>Pilih layanan sesuai kebutuhan pekerjaan Anda.</p>
+                        </div>
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Cari layanan yang Anda butuhkan...">
+                        </div>
+                    </div>
+
+                    <div class="services-grid" id="servicesGrid">
+                        <!-- Cards injected via JavaScript -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState">
+                        <i data-lucide="search-x" class="empty-state-icon"></i>
+                        <h3>Layanan tidak ditemukan</h3>
+                        <p>Coba gunakan kata kunci lain untuk mencari layanan.</p>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div>&copy; <span id="currentYear"></span> Portal Ortala PSDKP</div>
+                <div>Direktorat Jenderal Pengawasan Sumber Daya Kelautan dan Perikanan</div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // 1. Konfigurasi URL Terpusat (Single Source of Truth)
+        // Gunakan placeholder hashtag untuk fitur yang belum live/belum ada URL asli
+        const configURLs = {
+            anggaran: '#layanan-anggaran',
+            spjKeuangan: '#layanan-spj',
+            manajemenRapat: '#layanan-rapat',
+            benturanKepentingan: '#layanan-benturan',
+            bezzeting: '#layanan-bezzeting',
+            sop: '#layanan-sop',
+            inovasi: '#layanan-inovasi',
+            budayaKerja: '#layanan-budaya'
+        };
+
+        // 2. Konfigurasi Data 8 Kartu Layanan Dashboard
+        const servicesData = [
+            {
+                id: 'anggaran',
+                title: 'Anggaran',
+                desc: 'Akses pengelolaan, perencanaan, dan pemantauan realisasi anggaran.',
+                icon: 'wallet',
+                iconClass: 'teal-pastel',
+                urlKey: 'anggaran'
+            },
+            {
+                id: 'spj',
+                title: 'SPJ Keuangan',
+                desc: 'Sistem pembuatan dan pelaporan surat pertanggungjawaban keuangan.',
+                icon: 'receipt',
+                iconClass: 'navy-pastel',
+                urlKey: 'spjKeuangan'
+            },
+            {
+                id: 'rapat',
+                title: 'Manajemen Rapat',
+                desc: 'Pengelolaan jadwal, ruang, undangan, dan dokumentasi notulensi rapat.',
+                icon: 'calendar-days',
+                iconClass: 'teal-pastel',
+                urlKey: 'manajemenRapat'
+            },
+            {
+                id: 'benturan',
+                title: 'Benturan Kepentingan',
+                desc: 'Fasilitas pelaporan dan mitigasi risiko benturan kepentingan pegawai.',
+                icon: 'scale',
+                iconClass: 'navy-pastel',
+                urlKey: 'benturanKepentingan'
+            },
+            {
+                id: 'bezzeting',
+                title: 'Bezzeting',
+                desc: 'Informasi dan pengelolaan rincian kebutuhan serta ketersediaan pegawai.',
+                icon: 'users',
+                iconClass: 'teal-pastel',
+                urlKey: 'bezzeting'
+            },
+            {
+                id: 'sop',
+                title: 'SOP',
+                desc: 'Akses dokumen, pedoman, dan standar operasional prosedur.',
+                icon: 'clipboard-list',
+                iconClass: 'navy-pastel',
+                urlKey: 'sop'
+            },
+            {
+                id: 'inovasi',
+                title: 'Inovasi',
+                desc: 'Jelajahi ide, pelaporan pengembangan, dan dokumentasi inovasi.',
+                icon: 'sparkles',
+                iconClass: 'teal-pastel',
+                urlKey: 'inovasi'
+            },
+            {
+                id: 'budaya',
+                title: 'Budaya Kerja',
+                desc: 'Penguatan nilai, evaluasi, kolaborasi, dan budaya kerja organisasi.',
+                icon: 'heart-handshake',
+                iconClass: 'navy-pastel',
+                urlKey: 'budayaKerja'
+            }
+        ];
+
+        // 3. Render Kartu Dashboard
+        const grid = document.getElementById('servicesGrid');
+        
+        function renderCards(data) {
+            grid.innerHTML = '';
+            
+            data.forEach(service => {
+                const url = configURLs[service.urlKey];
+                const card = document.createElement('div');
+                card.className = `service-card`;
+                
+                // Seluruh kartu dapat diklik menggunakan URL tersinkronisasi
+                card.setAttribute('onclick', `handleNavigation(event, '${service.title}', '${url}')`);
+                
+                card.innerHTML = `
+                    <div class="card-icon-wrapper ${service.iconClass}">
+                        <i data-lucide="${service.icon}"></i>
+                    </div>
+                    <h3 class="card-title">${service.title}</h3>
+                    <p class="card-desc">${service.desc}</p>
+                    <div class="card-action">
+                        Buka layanan <i data-lucide="arrow-right"></i>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            // Render ulang ikon lucide setelah elemen diinject
+            if(window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // 4. Pencarian & Filter
+        const searchInput = document.getElementById('searchInput');
+        const emptyState = document.getElementById('emptyState');
+
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = servicesData.filter(service => 
+                service.title.toLowerCase().includes(keyword) || 
+                service.desc.toLowerCase().includes(keyword)
+            );
+            
+            renderCards(filtered);
+            
+            if (filtered.length === 0) {
+                emptyState.style.display = 'flex';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        });
+
+        // 5. Fungsi Navigasi Terpusat
+        window.handleNavigation = function(event, name, url) {
+            if (event) event.stopPropagation(); // Mencegah klik menembus elemen anak/induk jika diperlukan
+
+            if (name === 'Dashboard') {
+                return; // Hanya berfungsi memberikan visual aktif untuk dashboard
+            }
+
+            if (!url || url === '#' || url.startsWith('#layanan')) {
+                alert(`Layanan "${name}" belum dikonfigurasi saat ini. Silakan tambahkan URL aslinya pada sistem.`);
+            } else {
+                window.location.href = url;
+            }
+        };
+
+        // 6. Interaksi Navigasi Sidebar (Tutup-Buka dan Indikator Aktif)
+        window.toggleSubmenu = function(element) {
+            const parentGroup = element.closest('.nav-group');
+            parentGroup.classList.toggle('open');
+        };
+
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Hapus state aktif dari semua link
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                
+                // Tambahkan state aktif ke yang diklik
+                link.classList.add('active');
+                
+                // Jika di tampilan mobile, tutup menu overlay otomatis setelah pilih navigasi langsung
+                if(window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // 7. Toggle Menu Mobile
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // 8. Tanggal Dinamis & Tahun Footer
+        function initDates() {
+            const now = new Date();
+            
+            // Footer year
+            document.getElementById('currentYear').textContent = now.getFullYear();
+            
+            // Header date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // 9. Inisialisasi Aplikasi Saat Halaman Selesai Dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(servicesData);
+            initDates();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
